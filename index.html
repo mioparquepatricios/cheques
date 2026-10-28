@@ -111,6 +111,9 @@
             background: var(--tarjeta); color: var(--texto); margin-bottom: 4px; }
   .pie { text-align: center; color: var(--suave); font-size: 12px; margin-top: 24px; }
   .pie button { background: none; border: 0; color: var(--acento); font-size: 12px; text-decoration: underline; }
+  .instalar { width: 100%; border: 0; border-radius: 10px; background: var(--verde); color: #fff; font-weight: 600;
+              padding: 12px; margin-bottom: 12px; font-size: 15px; }
+  .instalar small { display: block; font-weight: 400; font-size: 12px; opacity: .9; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -122,6 +125,8 @@
 </header>
 
 <main>
+  <button class="instalar" id="btn-instalar" hidden>📲 Instalar en el celular <small>(queda un ícono como cualquier app)</small></button>
+
   <section id="pantalla-clave" class="tarjeta candado" hidden>
     <h2>Ingresá la contraseña</h2>
     <p>Los datos de los cheques están protegidos. La contraseña está en la PC, en el archivo
@@ -169,7 +174,7 @@
       <div id="resultado-buscar"></div>
     </div>
 
-    <div class="pie">Versión 1.0 · <button id="btn-salir">Olvidar la contraseña en este celular</button></div>
+    <div class="pie">Versión 1.1 · <button id="btn-salir">Olvidar la contraseña en este celular</button></div>
   </section>
 
   <div class="vacio-msg" id="cargando">Cargando…</div>
@@ -401,6 +406,23 @@ $("btn-refrescar").onclick = async () => {
 };
 $("btn-salir").onclick = () => { guardar(LS_CLAVE, null); cheques = []; pedirClave(); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && cifrado && !$("pantalla-datos").hidden) $("btn-refrescar").click(); });
+
+// ---- Instalar como app (Chrome muestra el aviso solo si la página se puede instalar) ----
+let avisoInstalar = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  avisoInstalar = e;
+  $("btn-instalar").hidden = false;
+});
+$("btn-instalar").onclick = async () => {
+  if (!avisoInstalar) return;
+  avisoInstalar.prompt();
+  await avisoInstalar.userChoice;
+  avisoInstalar = null;
+  $("btn-instalar").hidden = true;
+};
+window.addEventListener("appinstalled", () => ($("btn-instalar").hidden = true));
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 
 iniciar();
 </script>
