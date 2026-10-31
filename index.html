@@ -114,6 +114,9 @@
   .instalar { width: 100%; border: 0; border-radius: 10px; background: var(--verde); color: #fff; font-weight: 600;
               padding: 12px; margin-bottom: 12px; font-size: 15px; }
   .instalar small { display: block; font-weight: 400; font-size: 12px; opacity: .9; }
+  .ir-resumen { display: block; margin-top: 10px; padding: 11px 14px; border-radius: 10px; background: var(--acento-suave);
+                color: var(--acento); font-weight: 600; text-decoration: none; }
+  .ir-resumen small { display: block; font-weight: 400; font-size: 12px; color: var(--texto2); }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -143,6 +146,7 @@
     <div class="resumen" id="resumen"></div>
     <button class="aviso" id="aviso" hidden></button>
 
+    <a class="ir-resumen" href="resumen/">📊 Resumen de la semana <small>ventas, qué reponer y cheques ›</small></a>
     <div class="pestanas">
       <button data-vista="calendario" class="activa">Calendario</button>
       <button data-vista="proximos">Próximos</button>

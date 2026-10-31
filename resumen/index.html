@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Resumen MIO">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="../icono-192.png">
+<link rel="apple-touch-icon" href="../icono-192.png">
+<title>Resumen MIO</title>
+<style>
+  :root {
+    --fondo: #F4F6F9; --tarjeta: #FFFFFF; --borde: #E3E7ED; --texto: #0F172A; --texto2: #475569;
+    --suave: #8A96A8; --acento: #2563EB; --acento-suave: #EFF4FF; --rojo: #DC2626; --rojo-suave: #FEF2F2;
+    --verde: #059669; --verde-suave: #ECFDF5; --amarillo: #D97706; --amarillo-suave: #FFFBEB; --lateral: #111827; --gris: #F1F5F9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #0B1120; --tarjeta: #151E2E; --borde: #263244; --texto: #E5E9F0; --texto2: #A3B0C2;
+      --suave: #6B7A90; --acento: #3B82F6; --acento-suave: #172554; --rojo: #F87171; --rojo-suave: #3B1414;
+      --verde: #34D399; --verde-suave: #0F2E25; --amarillo: #FBBF24; --amarillo-suave: #33270A; --lateral: #0B1120; --gris: #1C2636;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--fondo); color: var(--texto);
+         font: 15px/1.4 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+  button { font: inherit; color: inherit; }
+  .barra { background: var(--lateral); color: #fff; padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+           display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 5; }
+  .logo { background: #2563EB; border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center;
+          font-weight: 700; font-size: 12px; flex: none; }
+  .barra h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  .barra small { display: block; color: #8B98AB; font-size: 12px; }
+  .barra a { margin-left: auto; background: #1F2937; border-radius: 8px; color: #CBD5E1; padding: 8px 12px;
+             font-size: 13px; text-decoration: none; white-space: nowrap; }
+  main { padding: 14px 16px 40px; max-width: 560px; margin: 0 auto; }
+  .tarjeta { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; }
+  .candado { padding: 22px 18px; margin-top: 30px; }
+  .candado h2 { margin: 0 0 6px; font-size: 18px; }
+  .candado p { margin: 0 0 16px; color: var(--texto2); font-size: 14px; }
+  input[type=password] { width: 100%; height: 46px; border: 1px solid var(--borde); border-radius: 8px; padding: 0 12px;
+                         font-size: 16px; background: var(--tarjeta); color: var(--texto); }
+  .recordar { display: flex; gap: 8px; align-items: center; margin: 12px 0 16px; color: var(--texto2); font-size: 14px; }
+  .boton { width: 100%; height: 46px; border: 0; border-radius: 8px; background: var(--acento); color: #fff; font-weight: 600; }
+  .error { color: var(--rojo); font-size: 14px; min-height: 20px; margin-top: 10px; }
+  .cargando { text-align: center; color: var(--texto2); padding: 40px 10px; }
+
+  h2.seccion { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--texto2);
+               margin: 26px 2px 8px; font-weight: 700; }
+  h2.seccion:first-child { margin-top: 4px; }
+  .grande { padding: 14px 16px; border-left: 3px solid var(--acento); }
+  .grande .t { font-size: 13px; color: var(--texto2); }
+  .grande .v { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .comparar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { font-size: 12.5px; border-radius: 6px; padding: 3px 8px; background: var(--gris); color: var(--texto2); }
+  .chip b { font-variant-numeric: tabular-nums; }
+  .chip.sube b { color: var(--verde); } .chip.baja b { color: var(--rojo); }
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .mini { padding: 10px 10px; }
+  .mini .t { font-size: 11.5px; color: var(--texto2); }
+  .mini .v { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .dias { padding: 12px 12px 8px; margin-top: 8px; }
+  .dias .fila { display: grid; grid-template-columns: 34px 1fr 92px; align-items: center; gap: 8px; padding: 3px 0; font-size: 13px; }
+  .dias .barra-d { height: 14px; border-radius: 4px; background: var(--acento); min-width: 2px; }
+  .dias .monto { text-align: right; font-variant-numeric: tabular-nums; color: var(--texto2); }
+  .dias .dn { color: var(--texto2); font-weight: 600; }
+  .nota { font-size: 12px; color: var(--suave); margin: 6px 2px 0; }
+
+  .lista .item { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--borde); }
+  .lista .item:first-child { border-top: 0; }
+  .lista .pos { color: var(--suave); width: 20px; flex: none; font-variant-numeric: tabular-nums; }
+  .lista .nom { flex: 1; font-weight: 600; }
+  .lista .cod { font-size: 12px; color: var(--suave); font-weight: 400; }
+  .lista .der { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; flex: none; }
+  .lista .der small { display: block; font-size: 12px; color: var(--texto2); font-weight: 400; }
+  .rubros { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .rubros span { background: var(--acento-suave); color: var(--acento); border-radius: 6px; padding: 4px 9px; font-size: 13px; font-weight: 600; }
+
+  .rep { padding: 11px 14px; border-top: 1px solid var(--borde); }
+  .rep:first-child { border-top: 0; }
+  .rep .cab { display: flex; justify-content: space-between; gap: 10px; }
+  .rep .cab .nom { font-weight: 600; }
+  .rep .cab small { color: var(--texto2); font-size: 12px; white-space: nowrap; }
+  .faltan { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .falta { font-size: 12.5px; border-radius: 6px; padding: 3px 8px; }
+  .falta.cero { background: var(--rojo-suave); color: var(--rojo); }
+  .falta.uno { background: var(--amarillo-suave); color: var(--amarillo); }
+
+  .cheque { display: flex; justify-content: space-between; gap: 10px; padding: 11px 14px; border-top: 1px solid var(--borde); }
+  .cheque:first-child { border-top: 0; }
+  .cheque .prov { font-weight: 600; }
+  .cheque .sub { font-size: 12px; color: var(--texto2); }
+  .cheque .imp { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; flex: none; }
+  .aviso { background: var(--rojo-suave); color: var(--rojo); border-radius: 10px; padding: 10px 12px; margin-top: 8px; font-size: 14px; }
+  .vacio-msg { padding: 16px 14px; color: var(--suave); text-align: center; font-size: 14px; }
+  .pie { text-align: center; color: var(--suave); font-size: 12px; margin-top: 26px; }
+  .pie button { background: none; border: 0; color: var(--acento); font-size: 12px; text-decoration: underline; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="barra">
+  <div class="logo">MIO</div>
+  <div><h1>Resumen de la semana</h1><small id="subtitulo">Ventas, reposición y cheques</small></div>
+  <a href="../">Cheques ›</a>
+</header>
+<main>
+  <div class="cargando" id="cargando">Cargando…</div>
+  <section id="pantalla-clave" class="tarjeta candado" hidden>
+    <h2>Ingresá la contraseña</h2>
+    <p>Es la misma contraseña de la página de Cheques (archivo <b>cheques-celular-CONTRASEÑA.txt</b> de la carpeta Descargas de la PC).</p>
+    <form id="form-clave">
+      <input type="password" id="clave" autocomplete="current-password" placeholder="Contraseña">
+      <label class="recordar"><input type="checkbox" id="recordar" checked> Recordarla en este celular</label>
+      <button class="boton">Entrar</button>
+      <div class="error" id="error-clave"></div>
+    </form>
+  </section>
+  <section id="pantalla-datos" hidden>
+    <h2 class="seccion">Ventas</h2>
+    <div id="ventas"></div>
+    <h2 class="seccion">Lo más vendido</h2>
+    <div id="top"></div>
+    <h2 class="seccion">Qué reponer</h2>
+    <div id="reponer"></div>
+    <h2 class="seccion" id="titulo-cheques">Cheques de esta semana</h2>
+    <div id="cheques"></div>
+    <div class="pie"><span id="generado"></span><br><button id="btn-salir">Olvidar la contraseña en este celular</button></div>
+  </section>
+</main>
+<script>
+const LS_CLAVE = "chequesMioClave";  // la misma que la página de Cheques
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DSEM = ["Lu","Ma","Mi","Ju","Vi","Sá","Do"];
+const $ = (id) => document.getElementById(id);
+let cifrado = null;
+
+function guardar(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pesos = (n) => "$ " + Math.round(n).toLocaleString("es-AR");
+const entero = (n) => Math.round(n).toLocaleString("es-AR");
+function deIso(t) { const [a, m, d] = t.split("-").map(Number); return new Date(a, m - 1, d); }
+function diaMes(t) { const d = deIso(t); return d.getDate() + " de " + MESES[d.getMonth()]; }
+function corto(t) { const d = deIso(t); return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0"); }
+
+function b64aBytes(b) { return Uint8Array.from(atob(b), (c) => c.charCodeAt(0)); }
+async function descifrar(c, clave) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(clave), "PBKDF2", false, ["deriveKey"]);
+  const llave = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: b64aBytes(c.sal), iterations: c.iteraciones, hash: "SHA-256" },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const plano = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64aBytes(c.iv) }, llave, b64aBytes(c.datos));
+  return JSON.parse(new TextDecoder().decode(plano));
+}
+
+// "+12%" con color; null si no hay con qué comparar
+function variacion(actual, antes, etiqueta) {
+  if (!antes) return '<span class="chip">' + etiqueta + ": sin datos</span>";
+  const p = Math.round((actual / antes - 1) * 100);
+  const cls = p > 0 ? "sube" : p < 0 ? "baja" : "";
+  return '<span class="chip ' + cls + '">' + etiqueta + " <b>" + (p > 0 ? "+" : "") + p + "%</b></span>";
+}
+
+function pintarVentas(v, ANT) {
+  const s = v.semana, ticketProm = s.tickets ? s.pesos / s.tickets : 0;
+  const max = Math.max(1, ...v.dias.map((d) => d.pesos));
+  const dias = v.dias.map((d, i) =>
+    '<div class="fila"><span class="dn">' + DSEM[i] + '</span><div><div class="barra-d" style="width:' +
+    (d.pesos / max * 100).toFixed(1) + '%"></div></div><span class="monto">' + (d.pesos ? pesos(d.pesos) : "cerrado") + "</span></div>").join("");
+  const m = v.mes, ma = v.mes_anio_pasado;
+  $("ventas").innerHTML =
+    '<div class="tarjeta grande"><div class="t">Vendido en la semana</div><div class="v">' + pesos(s.pesos) + "</div>" +
+    '<div class="comparar">' + variacion(s.pesos, v.anterior.pesos, "vs semana anterior") +
+    variacion(s.pesos, v.anio_pasado.pesos, "vs misma semana " + ANT) + "</div></div>" +
+    '<div class="tres">' +
+    '<div class="tarjeta mini"><div class="t">Prendas</div><div class="v">' + entero(s.prendas) + '</div><div class="comparar">' +
+    variacion(s.prendas, v.anio_pasado.prendas, "año pas.") + "</div></div>" +
+    '<div class="tarjeta mini"><div class="t">Tickets</div><div class="v">' + entero(s.tickets) + '</div><div class="comparar">' +
+    variacion(s.tickets, v.anio_pasado.tickets, "año pas.") + "</div></div>" +
+    '<div class="tarjeta mini"><div class="t">Ticket promedio</div><div class="v">' + pesos(ticketProm) + "</div></div></div>" +
+    '<div class="tarjeta dias">' + dias + "</div>" +
+    '<div class="tarjeta grande" style="margin-top:8px;border-left-color:var(--verde)"><div class="t">' +
+    MESES[m.numero - 1].replace(/^./, (c) => c.toUpperCase()) + " hasta el " + diaMes(m.hasta) + '</div><div class="v" style="font-size:22px">' +
+    pesos(m.pesos) + '</div><div class="comparar">' + variacion(m.pesos, ma.pesos, "pesos vs " + ANT) +
+    variacion(m.prendas, ma.prendas, "prendas vs " + ANT) + "</div></div>" +
+    '<p class="nota">Con la inflación, la comparación en pesos con el año pasado siempre da más; la de prendas muestra si se vendió más o menos de verdad.</p>';
+}
+
+function pintarTop(v) {
+  const filas = v.top_articulos.map((a, i) =>
+    '<div class="item"><span class="pos">' + (i + 1) + '</span><span class="nom">' + esc(a.desc) +
+    ' <span class="cod">' + esc(a.codigo) + '</span></span><span class="der">' + a.prendas + "<small>prendas</small></span></div>").join("");
+  $("top").innerHTML = '<div class="tarjeta lista">' + (filas || '<div class="vacio-msg">No hubo ventas</div>') + "</div>" +
+    '<div class="rubros">' + v.top_rubros.map((r) => "<span>" + esc(r.rubro) + " · " + r.prendas + "</span>").join("") + "</div>";
+}
+
+function pintarReponer(lista) {
+  if (!lista.length) { $("reponer").innerHTML = '<div class="tarjeta vacio-msg">No hay nada que se haya quedado sin stock 👍</div>'; return; }
+  $("reponer").innerHTML = '<div class="tarjeta">' + lista.map((a) =>
+    '<div class="rep"><div class="cab"><span class="nom">' + esc(a.desc) + ' <span class="cod" style="font-size:12px;color:var(--suave);font-weight:400">' +
+    esc(a.codigo) + "</span></span><small>" + a.vendidas_4sem + " vendidas</small></div>" +
+    '<div class="faltan">' + a.faltan.map((f) =>
+      '<span class="falta ' + (f.quedan ? "uno" : "cero") + '">' + esc([f.color, f.talle].filter(Boolean).join(" ") || "—") +
+      " · " + (f.quedan ? "queda 1" : "agotado") + "</span>").join("") + "</div></div>").join("") + "</div>" +
+    '<p class="nota">Talles y colores que se vendieron 2 o más veces en las últimas 4 semanas y ya no tienen stock (rojo) o les queda 1 (amarillo).</p>';
+}
+
+function pintarCheques(c) {
+  $("titulo-cheques").textContent = "Cheques de esta semana (" + corto(c.desde) + " al " + corto(c.hasta) + ")";
+  const total = c.semana.reduce((s, x) => s + x.monto, 0);
+  const fila = (x) => '<div class="cheque"><div><div class="prov">' + esc(x.proveedor) + '</div><div class="sub">Vence ' +
+    corto(x.vence) + " · cheque #" + esc(x.numero) + (x.banco ? " · " + esc(x.banco) : "") + '</div></div><div class="imp">' + pesos(x.monto) + "</div></div>";
+  let html = '<div class="tarjeta grande" style="border-left-color:var(--amarillo)"><div class="t">Total a pagar esta semana</div><div class="v">' +
+    pesos(total) + '</div><div class="t">' + c.semana.length + " cheque(s)</div></div>" +
+    '<div class="tarjeta" style="margin-top:8px">' + (c.semana.map(fila).join("") || '<div class="vacio-msg">No vence ningún cheque esta semana</div>') + "</div>";
+  if (c.vencidos.length) {
+    const tv = c.vencidos.reduce((s, x) => s + x.monto, 0);
+    html += '<div class="aviso">⚠ Hay ' + c.vencidos.length + " cheque(s) de antes que siguen sin marcar como pagados (" + pesos(tv) +
+      "). Si ya se pagaron, marcalos en el programa de Cheques.</div>" + '<div class="tarjeta" style="margin-top:8px">' + c.vencidos.map(fila).join("") + "</div>";
+  }
+  $("cheques").innerHTML = html;
+}
+
+async function abrir(clave, recordar) {
+  const d = await descifrar(cifrado, clave);
+  if (recordar) guardar(LS_CLAVE, clave);
+  $("subtitulo").textContent = "Del lunes " + diaMes(d.lunes) + " al domingo " + diaMes(d.domingo);
+  $("generado").textContent = "Armado el " + corto(d.generado.slice(0, 10)) + " a las " + d.generado.slice(11, 16) + " con los datos de LINCE";
+  pintarVentas(d.ventas, deIso(d.lunes).getFullYear() - 1); pintarTop(d.ventas); pintarReponer(d.reponer); pintarCheques(d.cheques);
+  $("pantalla-clave").hidden = true; $("pantalla-datos").hidden = false;
+}
+
+function pedirClave(msj) { $("cargando").hidden = true; $("pantalla-datos").hidden = true; $("pantalla-clave").hidden = false; $("error-clave").textContent = msj || ""; }
+
+async function iniciar() {
+  try {
+    const r = await fetch("resumen.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    cifrado = await r.json();
+  } catch (e) { $("cargando").textContent = "No hay conexión o todavía no se subió el resumen. Probá de nuevo en un rato."; return; }
+  $("cargando").hidden = true;
+  const g = leer(LS_CLAVE);
+  if (g) { try { await abrir(g, true); return; } catch (e) { guardar(LS_CLAVE, null); } }
+  pedirClave();
+}
+
+$("form-clave").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try { await abrir($("clave").value, $("recordar").checked); }
+  catch (err) { $("error-clave").textContent = "Contraseña incorrecta"; }
+});
+$("btn-salir").addEventListener("click", () => { guardar(LS_CLAVE, null); location.reload(); });
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("../sw.js").catch(() => {});
+iniciar();
+</script>
+</body>
+</html>
