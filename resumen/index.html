@@ -228,6 +228,10 @@ function pintarCheques(c) {
 async function abrir(clave, recordar) {
   const d = await descifrar(cifrado, clave);
   if (recordar) guardar(LS_CLAVE, clave);
+  mostrar(d);
+}
+
+function mostrar(d) {
   $("subtitulo").textContent = "Del lunes " + diaMes(d.lunes) + " al domingo " + diaMes(d.domingo);
   $("generado").textContent = "Armado el " + corto(d.generado.slice(0, 10)) + " a las " + d.generado.slice(11, 16) + " con los datos de LINCE";
   pintarVentas(d.ventas, deIso(d.lunes).getFullYear() - 1); pintarTop(d.ventas); pintarReponer(d.reponer); pintarCheques(d.cheques);
@@ -237,6 +241,10 @@ async function abrir(clave, recordar) {
 function pedirClave(msj) { $("cargando").hidden = true; $("pantalla-datos").hidden = true; $("pantalla-clave").hidden = false; $("error-clave").textContent = msj || ""; }
 
 async function iniciar() {
+  if (window.RESUMEN) {  // copia guardada en la PC: los datos vienen adentro del archivo, sin contraseña
+    $("cargando").hidden = true; $("btn-salir").hidden = true; document.querySelector(".barra a").hidden = true;
+    mostrar(window.RESUMEN); return;
+  }
   try {
     const r = await fetch("resumen.json?t=" + Date.now(), { cache: "no-store" });
     if (!r.ok) throw new Error(r.status);
